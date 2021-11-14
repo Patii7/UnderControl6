@@ -4,7 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Create123
+
+</h1>
 
 <h4>MyData</h4>
 <hr />
@@ -34,7 +36,7 @@
                 <input id="Reason" type="checkbox">Another reason for the higher temperature
                 <label>Devices number:</label>
                 <input id="devices" class="form-control" type="number" />
-                <button class="form-control" onclick="getMens()">Generate</button>
+                <button type="button" class="form-control" onclick="getMens()">Generate</button>
 
             </div>
             <div class="form-group">
@@ -183,24 +185,8 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     function getMens() {
-        var xmlhttp = new XMLHttpRequest();
-
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-                if (xmlhttp.status == 200) {
-                    document.getElementById("temperature").value = xmlhttp.responseText;
-                }
-                else if (xmlhttp.status == 400) {
-                    alert('There was an error 400');
-                }
-                else {
-                    alert('something else other than 200 was returned');
-                }
-            }
-        };
-
-        xmlhttp.open("GET", "https://localhost:90/MyDatas/GetLastMesurement?DevicesId=" + document.getElementById("devices").value, false);
-        xmlhttp.send();
+        let deviceId = document.getElementById("devices").value;
+        $.get("GetLastMesurement/" + deviceId).then(function(r) { document.getElementById("temperature").value = r; });
     }
     
 </script>

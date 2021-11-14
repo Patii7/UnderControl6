@@ -26,59 +26,54 @@ namespace UnderControl.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Send")]
-        public bool Send(string res, int id)
+        [HttpGet, Route("Send")]
+        public bool Send([FromQuery]string res, [FromQuery]int id)
         {
-            SaveResult(double.Parse(res), id);
+            //SaveResult(double.Parse(res), id);
             _context.Mesurements.Add(new Mesurement { DeviceId = id, Mesuremet = double.Parse(res) });
             _context.SaveChanges();
             return true;
         }
-        [HttpGet]
-        public double GetLastMesurement(int DevicesId)
-        {
-            //_context.Mesurements.Add(new Mesurement { DeviceId = 1, Mesuremet = 37.2 });
-            //_context.SaveChanges();
-            //Expression<Func<Mesurement, bool>> predicate = (Mesurement) => false;
-            //predicate = predicate.Last(n => n.DeviceId == DevicesId);
 
-                return _context.Mesurements.AsEnumerable().LastOrDefault(n => n.DeviceId == DevicesId).Mesuremet;
- 
+        [HttpGet("GetLastMesurement/{deviceId}")]
+        public double GetLastMesurement(int deviceId)
+        {
+            return _context.Mesurements.OrderByDescending(x => x.Id).FirstOrDefault(n => n.DeviceId == deviceId)?.Mesuremet ?? 0d;
         }
 
-        public string FileReader()
-        {
-            var filePath = "P:/Studia/Inżynierka/Data/record.txt";
+        //public string FileReader()
+        //{
+        //    var filePath = "P:/Studia/Inżynierka/Data/record.txt";
 
-            if (!System.IO.File.Exists(filePath))
-                return string.Empty;
+        //    if (!System.IO.File.Exists(filePath))
+        //        return string.Empty;
 
-            var fileRecords = System.IO.File.ReadAllText(filePath);
-            return fileRecords;
-        }
+        //    var fileRecords = System.IO.File.ReadAllText(filePath);
+        //    return fileRecords;
+        //}
 
-        public void SaveResult(double res, int id)
-        {
-            var filePath = "P:/Studia/Inżynierka/Data/record.txt";
-            var dir = Path.GetDirectoryName(filePath);
+        //public void SaveResult(double res, int id)
+        //{
+        //    var filePath = "P:/Studia/Inżynierka/Data/record.txt";
+        //    var dir = Path.GetDirectoryName(filePath);
 
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+        //    if (!Directory.Exists(dir))
+        //        Directory.CreateDirectory(dir);
 
-            var fileRecords = FileReader();
-            using (var st = new StreamWriter(filePath))
-            {
-                st.Write(fileRecords);
-                st.Write(res + ";" + id);
+        //    var fileRecords = FileReader();
+        //    using (var st = new StreamWriter(filePath))
+        //    {
+        //        st.Write(fileRecords);
+        //        st.Write(res + ";" + id);
 
-                st.Flush();
-                st.Close();
-            }
+        //        st.Flush();
+        //        st.Close();
+        //    }
 
-        }
+        //}
 
         [Authorize]
+        [HttpGet("")]
         // GET: MyDatas
         public async Task<IActionResult> Index()
         {
@@ -86,6 +81,7 @@ namespace UnderControl.Controllers
         }
 
         [Authorize]
+        [HttpGet("Details/{id}")]
         // GET: MyDatas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -106,6 +102,7 @@ namespace UnderControl.Controllers
 
         // GET: MyDatas/Create
         [Authorize]
+        [HttpGet("Create")]
         public IActionResult Create()
         {
            
@@ -116,7 +113,7 @@ namespace UnderControl.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Date,Time,ID,Temperature,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
         {
@@ -134,6 +131,7 @@ namespace UnderControl.Controllers
 
         // GET: MyDatas/Edit/5
         [Authorize]
+        [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -152,7 +150,7 @@ namespace UnderControl.Controllers
         // POST: MyDatas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Date,Time,ID,Temperature,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
@@ -187,6 +185,7 @@ namespace UnderControl.Controllers
 
         // GET: MyDatas/Delete/5
         [Authorize]
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -205,7 +204,7 @@ namespace UnderControl.Controllers
         }
 
         // POST: MyDatas/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("Delete/{id}")]
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
