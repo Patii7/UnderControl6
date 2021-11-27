@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,18 +14,44 @@ namespace UnderControl.Controllers
 {
     public class PeriodDaysModelsController : Controller
     {
+        //private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
 
-        public PeriodDaysModelsController(ApplicationDbContext context)
+        public PeriodDaysModelsController(ApplicationDbContext context/*, UserManager<ApplicationUser> userManager*/)
         {
             _context = context;
+            //this.userManager = userManager;
         }
         [Authorize]
         // GET: PeriodDaysModels
         public async Task<IActionResult> Index()
         {
+            //var userName = User.Identity.Name;
+            //var user = await userManager.FindByNameAsync(userName);
+            ////ViewBag.BirthDate = user.BirthDate;
+            //ViewBag.ShowWorkout = !await _context.PeriodDaysModels.Include(x => x.User)
+            //                                                  .AnyAsync(x => x.User.UserName == userName && x.AddDate == DateTime.Now.Date);
             return View(await _context.PeriodDaysModels.ToListAsync());
         }
+        //public async Task<IActionResult> AddPeriod()
+        //{
+        //    var userName = User.Identity.Name;
+
+        //    if (!await _context.PeriodDaysModels.Include(x => x.User).AnyAsync(x => x.User.UserName == userName && x.AddDate == DateTime.Now.Date))
+        //    {
+        //        var user = await _context.Set<ApplicationUser>().FirstAsync(x => x.UserName == userName);
+
+        //        _context.PeriodDaysModels.Add(new PeriodDaysModel
+        //        {
+        //            User = user
+        //        });
+
+        //        await _context.SaveChangesAsync();
+        //    }
+
+        //    return RedirectToAction("Index");
+        //    return View(await _context.PeriodDaysModels.ToListAsync());
+        //}
         [Authorize]
 
         // GET: PeriodDaysModels/Details/5

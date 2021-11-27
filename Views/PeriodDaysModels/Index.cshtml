@@ -2,10 +2,18 @@
 
 @{
     ViewData["Title"] = "Calendar";
-
+    //var events = (List<DateTime>)ViewBag.Events;
 }
+@*@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager*@
+
 
 <h1>Kalendarz twojego cyklu:</h1>
+@*@if (((bool?)ViewBag.ShowWorkout) == true)
+{
+    <a asp-action="AddPeriod" class="btn btn-primary">I Have a period today!</a>
+}*@
 <div style=" padding: 20px;">
     <table>
         <tr>
@@ -44,7 +52,6 @@
             @*@foreach (var e in events)
             {
             @:{
-
                 @:startDate: "@e.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")",
                 @:endDate: "@e.AddHours(5).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")",
                 @:summary: 'Workout registered'
@@ -53,7 +60,6 @@
         ],
         disableEventDetails: true,
         disableEmptyDetails: true
-
     });
 
     </script>
