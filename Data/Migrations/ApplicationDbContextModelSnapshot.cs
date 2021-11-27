@@ -277,6 +277,9 @@ namespace UnderControl.Data.Migrations
                     b.Property<string>("Quantity")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Sex")
                         .HasColumnType("nvarchar(max)");
 

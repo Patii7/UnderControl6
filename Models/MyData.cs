@@ -19,6 +19,8 @@ namespace UnderControl.Models
 
         //[RegularExpression(@"^[0-9]*(?:\.[0-9]*)?$")]
         public double Temperature { get; set; }
+
+        public string Reason { get; set; }
         public string Feeling { get; set; }
         public string Color { get; set; }
         public string Consistency { get; set; }

@@ -115,7 +115,7 @@ namespace UnderControl.Controllers
         [Authorize]
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Date,Time,ID,Temperature,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
+        public async Task<IActionResult> Create([Bind("Date,Time,ID,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
         {
             if (ModelState.IsValid)
             {
@@ -153,7 +153,7 @@ namespace UnderControl.Controllers
         [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("Date,Time,ID,Temperature,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
+        public async Task<IActionResult> Edit(int id, [Bind("Date,Time,ID,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
         {
             if (id != myData.ID)
             {

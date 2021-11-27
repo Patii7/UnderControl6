@@ -24,8 +24,24 @@
             </div>
             <div class="form-group">
                 <label asp-for="Temperature" class="control-label"></label>
-                <input asp-for="Temperature" class="form-control" type="number" />
+                <input id="temperature" asp-for="Temperature" class="form-control" type="number" lang="en" />
                 <span asp-validation-for="Temperature" class="text-danger"></span>
+                <label>Devices number:</label>
+                <input id="devices" class="form-control" type="number" />
+                <button type="button" class="form-control" onclick="getMens()">Generate</button>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Reason" class="control-label"></label>
+                <select asp-for="Reason" class="form-control">
+                    <option value="Yes">
+                        Yes
+                    </option>
+                    <option value="No">
+                        No
+                    </option>
+                </select>
+                <span asp-validation-for="Reason" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Feeling" class="control-label"></label>
