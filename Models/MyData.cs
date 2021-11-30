@@ -9,7 +9,9 @@ namespace UnderControl.Models
 {
     public class MyData 
     {
-        public DateTime Date { get; set; }
+        public ApplicationUser User { get; set; }
+		public string UserId { get; set; }
+		public DateTime Date { get; set; }
         //[RegularExpression(@"^[0-9]*(?:\.[0-9]*)?$")]
         public double Time { get; set; }
 

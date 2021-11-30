@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -27,8 +28,9 @@ namespace UnderControl.Controllers
         // GET: PeriodDaysModels
         public async Task<IActionResult> Index()
         {
-            var userId = User.Identity.GetUserId();
-            return View(await _context.MyData.ToListAsync());
+            //var userId = User.Identity.GetUserId();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _context.MyData.Where(n=>n.UserId==userId).ToListAsync());
         }
         //public async Task<IActionResult> AddPeriod()
         //{

@@ -4,5 +4,7 @@ namespace UnderControl.Models
 {
     public class ApplicationUser : IdentityUser
     {
+
+        
     }
 }

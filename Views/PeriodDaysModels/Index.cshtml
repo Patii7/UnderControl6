@@ -16,7 +16,7 @@
             period.Item3 = "Menstruation";
         }
 
-        if (period.Item1 != default && item.x.Bleeding.ToLower() != "yes")
+        if (period.Item1 != default && (item.x.Bleeding.ToLower() != "yes" || item.x.Bleeding.ToLower() != null ) )
         {
             period.Item2 = (item.x.Date);
             events.Add(period);
@@ -37,10 +37,7 @@
             furtile .Item1 = (item.x.Date);
             furtile .Item3 = "Fartile Days";
             goto Last;
-            break;
         }
-
-
     }
 
     Last:

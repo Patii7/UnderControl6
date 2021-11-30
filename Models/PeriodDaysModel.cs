@@ -14,5 +14,6 @@ namespace UnderControl.Models
         public int Id { get; set; }
         public DateTime AddDate { get; set; } = DateTime.Now.Date;
         public ApplicationUser User { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -77,7 +78,8 @@ namespace UnderControl.Controllers
         // GET: MyDatas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MyData.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _context.MyData.Where(n=>n.UserId==userId).ToListAsync());
         }
 
         [Authorize]
@@ -119,14 +121,19 @@ namespace UnderControl.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(myData);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!await _context.MyData.Include(x => x.User).AnyAsync(x => x.UserId == userId))
+                {
+                    myData.UserId = userId;
+                    _context.Add(myData);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
         
             return View(myData);
          
-                          
+     
         }
 
         // GET: MyDatas/Edit/5
