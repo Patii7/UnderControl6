@@ -1,7 +1,91 @@
-﻿@model IEnumerable<UnderControl.Models.PeriodDaysModel>
+﻿@model List<UnderControl.Models.MyData>
 
 @{
     ViewData["Title"] = "Calendar";
+    var events = new List<(DateTime, DateTime, string)>();
+    (DateTime, DateTime, string) period = default;
+    (DateTime, DateTime, string) furtile = default;
+    var items = Model.OrderBy(x => x.Date);
+
+    foreach (var item in items.Select((x, i) => new { x, i }))
+    {
+
+        if (period.Item1 == default && item.x.Bleeding.ToLower() == "yes")
+        {
+            period.Item1 = (item.x.Date);
+            period.Item3 = "Menstruation";
+        }
+
+        if (period.Item1 != default && item.x.Bleeding.ToLower() != "yes")
+        {
+            period.Item2 = (item.x.Date);
+            events.Add(period);
+            period = default;
+        }
+
+        if ((furtile .Item1 == default)
+        && (item.x.Feeling.ToLower() == "wet")
+        || ((item.x.Feeling.ToLower() == "damp")
+        || (item.x.Color.ToLower() == "transparent mucus")
+        || (item.x.Color.ToLower() == "cloudy mucus")
+        || (item.x.Consistency.ToLower() == "thick and pulling mucus")
+        || (item.x.Quantity.ToLower() == "lots of mucus")
+        || (item.x.Quantity.ToLower() == "little mucus")
+        || (item.x.Cervix.ToLower() == "soft and wet")
+        || (item.x.Date == (items.First().Date.AddDays(items.Count() - 19)))))
+        {
+            furtile .Item1 = (item.x.Date);
+            furtile .Item3 = "Fartile Days";
+            goto Last;
+            break;
+        }
+
+
+    }
+
+    Last:
+    foreach (var item in items.Select((x, i) => new { x, i }))
+    {
+        if (furtile.Item1 != default
+    && item.x.Feeling.ToLower() == "dry" || item.x.Feeling.ToLower() == "damp")
+        {
+            if (item.x.Color.ToLower() == "no mucus" || item.x.Color.ToLower() == "white or yellow mucus")
+            {
+
+                if (item.x.Consistency.ToLower() == "unstretchable and sticky mucus"
+                || item.x.Consistency.ToLower() == "no mucus")
+                {
+                    if (item.x.Quantity.ToLower() == "little mucus" || item.x.Quantity.ToLower() == "no mucus")
+                    {
+                        if (item.x.Cervix.ToLower() == "hard and dry")
+                        {
+                            if (items.Count() > item.i + 3 && item.i - 1 >= 0)
+                            {
+
+                                var DayAgo = items.ElementAt(item.i - 1);
+
+                                if (((item.x.Temperature - DayAgo.Temperature) >= 0.2) && item.x.Reason.ToLower() == "no")
+                                {
+                                    var inThreeDays = items.ElementAt(item.i + 2);
+                                    furtile.Item2 = (inThreeDays.Date);
+                                    events.Add(furtile);
+                                    furtile = default;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (period.Item1 != default)
+    {
+        period.Item2 = (DateTime.Now);
+        events.Add(period);
+        period = default;
+    }
+
     //var events = (List<DateTime>)ViewBag.Events;
 }
 @*@using Microsoft.AspNetCore.Identity
@@ -15,15 +99,7 @@
     <a asp-action="AddPeriod" class="btn btn-primary">I Have a period today!</a>
 }*@
 <div style=" padding: 20px;">
-    <table>
-        <tr>
-            <td>
-                <div style=" padding: 20px; margin-right: 30px">
-                    <div id="calendar"></div>
-                </div>
-            </td>
-        </tr>
-    </table>
+    <div id="calendar"></div>
 </div>
 
 
@@ -40,27 +116,32 @@
 </script>
 
 
-
-
-
-
 @section Scripts{
     <script>
-    $("#calendar").simpleCalendar({
-        displayEvent: true,
-        events: [
-            @*@foreach (var e in events)
-            {
-            @:{
-                @:startDate: "@e.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")",
-                @:endDate: "@e.AddHours(5).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")",
-                @:summary: 'Workout registered'
-            @:},
-            }*@
-        ],
-        disableEventDetails: true,
-        disableEmptyDetails: true
-    });
+$(document).ready(function(){
+
+  $('#calendar').fullCalendar({
+  header: {
+    left: 'prev,next today',
+    center: 'title',
+    right: 'month,agendaWeek,agendaDay,listWeek'
+  },
+  defaultDate: '2019-01-12',
+  navLinks: true, // can click day/week names to navigate views
+  editable: true,
+  eventLimit: true, // allow "more" link when too many events
+  events: [
+      @foreach (var item in events)
+      {
+          @:{
+              @:title: '@item.Item3',
+              @:start: '@item.Item1.ToString("yyyy-MM-ddTHH:mm:ss")',
+              @:end: '@item.Item2.ToString("yyyy-MM-ddTHH:mm:ss")'
+          @:},
+      }
+  ]
+});
+})
 
     </script>
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,8 @@ namespace UnderControl.Controllers
         // GET: PeriodDaysModels
         public async Task<IActionResult> Index()
         {
-            //var userName = User.Identity.Name;
-            //var user = await userManager.FindByNameAsync(userName);
-            ////ViewBag.BirthDate = user.BirthDate;
-            //ViewBag.ShowWorkout = !await _context.PeriodDaysModels.Include(x => x.User)
-            //                                                  .AnyAsync(x => x.User.UserName == userName && x.AddDate == DateTime.Now.Date);
-            return View(await _context.PeriodDaysModels.ToListAsync());
+            var userId = User.Identity.GetUserId();
+            return View(await _context.MyData.ToListAsync());
         }
         //public async Task<IActionResult> AddPeriod()
         //{
