@@ -1,42 +1,74 @@
 ﻿@model List<UnderControl.Models.MyData>
 
 @{
+    List<DateTime> bleedingDays = new List<DateTime>();
+    var items2 = (List<MyData>)Model.OrderBy(x => x.Date).ToList();
+    bool flag = false;
+
+    for (var i = DateTime.Now.Day; i >= 0; i--)
+    {
+        try
+        {
+            if (items2[i - 1].Bleeding == null || items2.Count < 2)
+            {
+                flag = true;
+            }
+            if (items2[i].Bleeding == "yes" && items2[i - 1].Bleeding != "yes" && items2[i + 1].Bleeding == "yes")
+            {
+                bleedingDays.Add(items2[i].Date);
+
+            }
+        } catch(Exception e ){ string war = "O"; }
+
+        }
+    
+    
+
     ViewData["Title"] = "Calendar";
     var events = new List<(DateTime, DateTime, string)>();
     (DateTime, DateTime, string) period = default;
     (DateTime, DateTime, string) furtile = default;
     var items = Model.OrderBy(x => x.Date);
 
+
+    
     foreach (var item in items.Select((x, i) => new { x, i }))
     {
-
-        if (period.Item1 == default && item.x.Bleeding.ToLower() == "yes")
+        if(item.x.Date==items2.First().Date)
         {
-            period.Item1 = (item.x.Date);
-            period.Item3 = "Menstruation";
+            flag = true;
         }
-
-        if (period.Item1 != default && (item.x.Bleeding.ToLower() != "yes" || item.x.Bleeding.ToLower() != null ) )
+        if (flag == true)
         {
-            period.Item2 = (item.x.Date);
-            events.Add(period);
-            period = default;
-        }
+            if (period.Item1 == default && item.x.Bleeding.ToLower() == "yes")
+            {
+                period.Item1 = (item.x.Date);
+                period.Item3 = "Menstruation";
+            }
 
-        if ((furtile .Item1 == default)
-        && (item.x.Feeling.ToLower() == "wet")
-        || ((item.x.Feeling.ToLower() == "damp")
-        || (item.x.Color.ToLower() == "transparent mucus")
-        || (item.x.Color.ToLower() == "cloudy mucus")
-        || (item.x.Consistency.ToLower() == "thick and pulling mucus")
-        || (item.x.Quantity.ToLower() == "lots of mucus")
-        || (item.x.Quantity.ToLower() == "little mucus")
-        || (item.x.Cervix.ToLower() == "soft and wet")
-        || (item.x.Date == (items.First().Date.AddDays(items.Count() - 19)))))
-        {
-            furtile .Item1 = (item.x.Date);
-            furtile .Item3 = "Fartile Days";
-            goto Last;
+            if (period.Item1 != default && (item.x.Bleeding.ToLower() != "yes" || item.x.Bleeding.ToLower() != null))
+            {
+                period.Item2 = (item.x.Date);
+                events.Add(period);
+                period = default;
+            }
+
+            if ((furtile.Item1 == default)
+            && (item.x.Feeling.ToLower() == "wet")
+            || ((item.x.Feeling.ToLower() == "damp")
+            || (item.x.Color.ToLower() == "transparent mucus")
+            || (item.x.Color.ToLower() == "cloudy mucus")
+            || (item.x.Consistency.ToLower() == "thick and pulling mucus")
+            || (item.x.Quantity.ToLower() == "lots of mucus")
+            || (item.x.Quantity.ToLower() == "little mucus")
+            || (item.x.Cervix.ToLower() == "soft and wet")
+            || (item.x.Date == (items.First().Date.AddDays(items.Count() - 19)))))
+            {
+                furtile.Item1 = (item.x.Date);
+                furtile.Item3 = "Fartile Days";
+                goto Last;
+
+            }
         }
     }
 

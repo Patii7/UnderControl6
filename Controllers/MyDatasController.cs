@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -78,7 +79,7 @@ namespace UnderControl.Controllers
         // GET: MyDatas
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.Identity.GetUserId(); ;
             return View(await _context.MyData.Where(n=>n.UserId==userId).ToListAsync());
         }
 
@@ -117,11 +118,11 @@ namespace UnderControl.Controllers
         [Authorize]
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Date,Time,ID,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
+        public async Task<IActionResult> Create([Bind("UserId,Date,Time,ID, Length,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
         {
             if (ModelState.IsValid)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = User.Identity.GetUserId();
                 if (!await _context.MyData.Include(x => x.User).AnyAsync(x => x.UserId == userId))
                 {
                     myData.UserId = userId;
@@ -160,7 +161,7 @@ namespace UnderControl.Controllers
         [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("Date,Time,ID,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,Date,Time,ID,Length,Temperature,Reason,Feeling,Color,Consistency,Quantity,Cervix,Bleeding,Sex,Others")] MyData myData)
         {
             if (id != myData.ID)
             {
